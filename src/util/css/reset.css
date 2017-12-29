@@ -113,3 +113,23 @@ body {
     overflow-x: hidden;
 }
 
+
+table{border-collapse:collapse;border-spacing:0; width:100%; background:#fff}
+td{padding:3px 5px;}
+th{font-weight:normal; background:#e7f4fe; height:40px}
+table,td,th{ border:1px solid #ddd}
+table caption{ font-size:16px; text-align:left; padding-bottom:10px;}
+a{text-decoration: none;outline: none;   }
+img{border: 0;}
+.fl{float:left;_display:inline}
+.fr{float:right;_display:inline}
+.clear:after{content:"200B";display:block;height:0;font-size:0;clear:both;}
+/*IE6,7*/
+.clear{*zoom:1;}
+.mc{margin:0 auto}
+.pr{position:relative;*zoom:1}
+.pa{position:absolute}
+.tc{text-align:center}
+.tl{text-align:left !important}
+.tr{text-align:right !important}
+.innter{width: 1200px;margin:0 auto;}
