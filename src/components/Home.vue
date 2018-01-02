@@ -10,10 +10,13 @@
       </div>
     </div>
   </div>
+  <input type="button" value=" 1111111">
+  <!--<Tel></Tel>-->
   </div>
 </template>
 
 <script>
+//  import Tel from '@/components/tel/Tel'
 export default {
 	name: 'Home',
 	data() {
@@ -21,15 +24,19 @@ export default {
 			msg: '专业票据交易服务平台',
 		};
 	},
+  components: {
+//    Tel
+  }
 };
 </script>
 
 <style scoped>
 @import '../util/css/reset.css';
+
 .home-content {
 	width: 100%;
 	/* height: 100%; */
- 
+
 }
 .home {
   width: 100%;
@@ -53,7 +60,7 @@ export default {
 	background: #fff;
   border-radius: 10px;
   box-sizing: border-box;
-  padding: 
+  padding:
 }
 .home-ctb{
   width: 100%;
