@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 import 'lib-flexible'
 
 import MintUI from 'mint-ui'
@@ -12,8 +12,11 @@ import 'mint-ui/lib/style.css'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
-Vue.prototype.$http = axios
-Vue.use(VueAxios, axios)
+Vue.prototype.$http = axios;
+Vue.use(VueAxios, axios);
+Vue.use(MintUI);
+
+
 
 /* eslint-disable no-new */
 new Vue({
