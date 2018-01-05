@@ -11,10 +11,10 @@ import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+Vue.use(MintUI)
 
 Vue.prototype.$http = axios;
 Vue.use(VueAxios, axios);
-Vue.use(MintUI);
 
 
 
