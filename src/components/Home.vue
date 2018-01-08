@@ -515,7 +515,7 @@ export default {
 	color: #60bcee;
 }
 .data-left .money-wy {
-	font-size: 20px;
+	font-size: 24px;
 }
 .data-left :nth-child(2) {
 	font-size: 24px;
@@ -566,19 +566,16 @@ input {
 	height: 50px;
 	border: none;
 	padding-left: 36px;
-	/* padding:10px 0 10px 36px; */
 	margin: 0;
 	box-sizing: border-box;
 	line-height: 50px;
 	font-size: 24px;
-	/* text-align: center; */
 }
 .selected {
 	width: 33px;
 	height: 33px;
 }
 .ticket {
-	/* margin-right:35px; */
 	width: 45px;
 	height: 36px;
 }
@@ -602,23 +599,17 @@ ul {
 }
 .popup {
 	width: 100%;
-	/* height: 50px; */
 }
 .select-p {
 	font-family: Microsoft YaHei UI;
-	/* font-size: 18px; */
 	display: flex;
 	width: 100%;
 	height: 88px;
 	justify-content: space-between;
 	align-items: center;
-	/* background: green; */
 	border-bottom: 1px solid #b0def7;
 }
 .showPicker {
-	/* position: absolute;
-  top:0;
-  left: 0; */
 	background: hotpink;
 	width: 100%;
 	height: 100%;
@@ -635,7 +626,6 @@ img {
 	font-family: Microsoft YaHei UI;
 	width: 100%;
 	height: 100%;
-	/* height: 3642px; */
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -656,7 +646,6 @@ img {
 }
 .home-content-top {
 	width: 100%;
-	/* height: 688px; */
 	background: #fff;
 	border-radius: 10px;
 	box-sizing: border-box;
@@ -671,7 +660,6 @@ img {
 	padding: 30px 18px 10px 18px;
 }
 .tab {
-	/* margin-top:30px; */
 	margin-bottom: 60px;
 }
 .home-process {
@@ -702,7 +690,6 @@ img {
 .home-data {
 	display: flex;
 	flex-direction: column;
-	/* justify-content: space-between; */
 	align-items: center;
 	margin-top: 30px;
 	width: 100%;
