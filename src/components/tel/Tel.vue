@@ -1,43 +1,45 @@
 <template>
-  <div>
-    <mt-popup v-model="popupVisible" pop-transition="popup-fade" closeOnClickModal class="TelPopup" v-if="childmsg==2">
-      <div class="telpop">
-        <h3 class="h3">验证您的联系手机</h3>
-        <mt-field label="手机号" placeholder="" type="tel" v-model="phone" :attr="{ maxlength: 11 }" :state=msg></mt-field>
-        <mt-field label="验证码" v-model="captcha" :attr="{ maxlength: 6 }">
-          <mt-button class="validate" @click="countdown" :disabled="smsDis">{{smsBtnText}}</mt-button>
-        </mt-field>
-        <mt-button type="primary" size="large" class="btn" @click="verify()">立即验证</mt-button>
-      </div>
-    </mt-popup>
-    <div class="sucepop" v-if="showscu">
-      <mt-popup v-model="suceVisible" position="top" modal class="ProPop">
-        <mt-popup v-model="suceVisible" pop-transition="popup-fade" modal class="cont">
-          <div v-if="IsShow==1">
-            <h1>您已注册成功，请注意查收短信</h1>
-            <p>我们已收到您的需求</p>
-            <p>客服人员会尽快与您联系</p>
-          </div>
-          <div v-if="IsShow==2">
-            <h1>您的需求已提交</h1>
-            <p>客服人员会尽快与您联系</p>
-          </div>
-        </mt-popup>
-        <mt-button type="primary" size="large" class="ProPopBtn" @click="SuceClose()">再次发布需求</mt-button>
-      </mt-popup>
-    </div>
-  </div>
+	<div>
+		<mt-popup v-model="popupVisible" pop-transition="popup-fade" closeOnClickModal class="TelPopup" v-if="isShowTel==1">
+			<div class="telpop">
+				<h3 class="h3">验证您的联系手机</h3>
+				<mt-field readonly="readonly" label="手机号" placeholder="" type="tel" v-model="phone" :attr="{ maxlength: 11 }" :state=msg></mt-field>
+				<mt-field label="验证码" v-model="sms_code" :attr="{ maxlength: 6 }">
+					<mt-button class="validate" @click="countdown" :disabled="smsDis">{{smsBtnText}}</mt-button>
+				</mt-field>
+				<mt-button type="primary" size="large" class="btn" @click="verify()">立即验证</mt-button>
+			</div>
+		</mt-popup>
+		<div class="sucepop" v-if="isShowTel==2">
+			<mt-popup v-model="suceVisible" position="top" modal class="ProPop">
+				<mt-popup v-model="suceVisible" pop-transition="popup-fade" modal class="cont">
+					<div v-if="IsShow==1">
+						<h1>您已注册成功，请注意查收短信</h1>
+						<p>我们已收到您的需求</p>
+						<p>客服人员会尽快与您联系</p>
+					</div>
+					<div v-if="IsShow==2">
+						<h1>您的需求已提交</h1>
+						<p>客服人员会尽快与您联系</p>
+					</div>
+				</mt-popup>
+				<mt-button type="primary" size="large" class="ProPopBtn" @click="SuceClose()">再次发布需求</mt-button>
+			</mt-popup>
+		</div>
+	</div>
 </template>
 
 <script>
+import * as global from '../../util/js/global';
 export default {
 	name: 'tel',
-	props: ['childmsg','showscu'],
+	props: ['childMsg'],
 	data() {
 		return {
-			isShowTel: '',
-			phone: '',
-			captcha: '',
+			isShowTel: this.childMsg.showph,
+			phone: this.childMsg.phoneNum,
+			parentFormData: this.childMsg.formDate,
+			sms_code: '',
 			msg: '',
 			popupVisible: true,
 			smsDis: false,
@@ -50,49 +52,29 @@ export default {
 			suceVisible: true,
 		};
 	},
-	created() {
-		//  let status = this.childmsg.mobileStatus;
-		// console.log(status)
-	},
 	mounted() {
-		// console.log(132)
-		// let status = this.childmsg.mobileStatus;
-		// console.log(status)
-		// let phone=this.$route.query.phone
-
-		// this.phone=phone
-		// if (!status==3) {
-		// 	this.isShowTel = 2;
-		// }
+		this.countdown();
 	},
 	beforeUpdate() {},
-	updated() {
-		//  console.log(132)
-		//     let status = this.childmsg.mobileStatus;
-		// console.log(this.childmsg)
-		// // let phone=this.$route.query.phone
-		// // this.phone=phone
-		// if (!status==3) {
-		// 	this.isShowTel = 2;
-		// }
-		// console.log();
-	},
-	// computed: {
-	// 	pokerHistory() {
-  //     	 let status = this.childmsg.mobileStatus;
-	// 		if (status==3) {
-	// 		this.isShowTel = 2;
-	// 	}
-	// 	},
-	// },
-	// watch: {
-	// 	childmsg(newValue, oldValue) {
-	// 		console.log(newValue);
-	// 	},
-	// },
 	methods: {
+		istabActive(a) {
+			// 1收票2贴现
+			console.log(a);
+			let verifyUrl = '';
+			if (a == 1) {
+				verifyUrl = global.globalUrl() + '/json/m/pub/v1/user/draft/receive/reg-demand';
+			}
+			if (a == 2) {
+				verifyUrl = global.globalUrl() + '/json/m/pub/v1/user/draft/discount/reg-demand';
+			}
+			return verifyUrl;
+		},
 		countdown() {
 			let _this = this;
+			console.log(this.phone);
+			if (this.isShowTel == 2) {
+				return false;
+			}
 			if (!/^1\d{10}$/.test(this.phone)) {
 				this.msg = 'error';
 				this.$toast({
@@ -116,30 +98,42 @@ export default {
 				}
 				_this.smsBtnText = `${_this.count--}秒再获取`;
 			}, 1000);
-			this.$toast({
-				message: '验证码发送成功',
-				position: 'top',
-			});
-			// 发送请求
-			//        _this.$ajax({
-			//          method: 'post',
-			//          url: '',
-			//          data: {Phone: mobile}
-			//        })
-			//          .then((response) => {
-			//            if (response.data.Code === 2000) {
-			//              this.$message({
-			//                message: '短信发送成功！',
-			//                type: 'success'
-			//              })
-			//            }
-			//          })
-			//          .catch((reject) => {
-			//            console.log(reject)
-			//          })
+
+			let url = global.globalUrl() + '/json/pub/v1/user/sms/code/discount';
+			_this.axios
+				.post(url, { mobile: _this.phone })
+				.then(res => {
+					console.log(res);
+					if (res.data.success)
+						this.$toast({
+							message: '验证码发送成功',
+							position: 'top',
+						});
+				})
+				.catch(function(error) {
+					if (error.response) {
+						console.log(error.response.data);
+						that.$toast({
+							message: error.response.data.rsMsg,
+							position: 'top',
+						});
+						console.log(error.response.status);
+						console.log(error.response.headers);
+					} else if (error.request) {
+						console.log(error.request);
+					} else {
+						console.log('Error', error.message);
+					}
+					console.log(error.config);
+				});
 		},
 
 		verify() {
+			console.log(this.childMsg.istabActive);
+			let that = this;
+			let verifyUrl = this.istabActive(that.childMsg.istabActive);
+			// console.log(this.parentFormData.time + '子组件拿到formData');
+			console.log(verifyUrl);
 			if (!/^1\d{10}$/.test(this.phone)) {
 				this.msg = 'error';
 				this.$toast({
@@ -148,7 +142,7 @@ export default {
 				});
 				return false;
 			}
-			if (!this.captcha) {
+			if (!this.sms_code) {
 				this.$toast({
 					message: '验证码错误',
 					position: 'top',
@@ -156,13 +150,39 @@ export default {
 				return false;
 			}
 
-			this.suceVisible = true;
-			this.IsShow = 1;
-			this.sucepop = true;
+			that.parentFormData.sms_code = that.sms_code;
+			console.log(that.parentFormData);
+			that.axios
+				.post(verifyUrl, that.parentFormData)
+				.then(res => {
+					console.log(res);
+					if (res.data.result) {
+						that.IsShow = 1;
+						that.isShowTel = 2;
+					}
+					console.log(res.success);
+					console.log(res.rsMsg);
+				})
+				.catch(error=> {
+					if (error.response) {
+						console.log(error.response.data);
+						that.$toast({
+							message: error.response.data.rsMsg,
+							position: 'top',
+						});
+						console.log(error.response.status);
+						console.log(error.response.headers);
+					} else if (error.request) {
+						console.log(error.request);
+					} else {
+						console.log('Error', error.message);
+					}
+				});
 		},
 		SuceClose() {
-			this.suceVisible = false;
-			this.$router.push({ name: 'Home' });
+			console.log(this.childMsg.showph);
+			this.isShowTel = 3;
+			this.$emit('newNodeEvent', false);
 		},
 	},
 	components: {},

@@ -91,11 +91,11 @@
 							<label for="time" class="select-p">
 								<div class="fx" @click="open">
 									<img class="time" src="../assets/img/time.png" alt="">
-									<input readonly="readonly" id="time" type="text" placeholder="请选择您的到期日期" v-model="time">
+									<input readonly="readonly" id="time" type="text" placeholder="请选择您的到期日期" :value="time">
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
 							</label>
-							<mt-datetime-picker type="date" ref="picker" v-model="time" year-format="{value} 年" month-format="{value} 月" @confirm="handleConfirm" date-format="{value} 日" :startDate="startDate" :endDate="endDate">
+							<mt-datetime-picker type="date" ref="picker" year-format="{value} 年" month-format="{value} 月" @confirm="handleConfirm" date-format="{value} 日" :startDate="startDate" :endDate="endDate">
 							</mt-datetime-picker>
 							<label for="bank" class="select-p">
 								<div class="fx" @click="showBank()">
@@ -142,7 +142,9 @@
 					<div class="data-center">
 						<img class="data-lr" src="../assets/img/data-right.png" alt="">
 						<div class="data-left">
-							<span>{{transactionMoney}}亿元</span>
+							<span>{{transactionMoney}}亿
+								<span class="money-wy">{{transactionMoneyWan}}万{{transactionMoneyYuan}}元</span>
+							</span>
 							<span>累计电票成交金额</span>
 						</div>
 					</div>
@@ -159,32 +161,47 @@
 
 			</div>
 		</div>
-		<Tel :childmsg="msgdata" :showscu="showsucepop"></Tel>
+		<Tel :child-msg="msgdata" v-if="showChild" @newNodeEvent="parentLisen"></Tel>
 	</div>
 </template>
 
 <script>
 import { Toast } from 'mint-ui';
 import { DatetimePicker } from 'mint-ui';
-import * as global from '../util/js/global'
+import * as global from '../util/js/global';
 import Tel from '@/components/tel/Tel';
 export default {
 	name: 'Home',
 	mounted() {
-		let that=this
-		console.log(global.globalUrl)
-		let url=global.globalUrl()+'/json/m/pub/v1/draft/platform/data/total'
-		that.axios.get(url).then(res => {
-					console.log(res);
-					that.transactionNum=res.data.dbAllTradeNum
-					that.transactionMoney=res.data.strMoneyYiAll
-
-				})
-				.catch(function(res) {
-					console.log(res);
-				});
+		let that = this;
+		// console.log(global.globalUrl)
+		let url = global.globalUrl() + '/json/m/pub/v1/draft/platform/data/total';
+		that.axios
+			.get(url)
+			.then(res => {
+				console.log(res);
+				that.transactionNum = res.data.dbAllTradeNum;
+				that.transactionMoney = res.data.strMoneyYiAll;
+				that.transactionMoneyWan = res.data.strMoneyWanAll;
+				that.transactionMoneyYuan = res.data.strMoneyYuanAll;
+			})
+			.catch(error => {
+				if (error.response) {
+					console.log(error.response.data);
+					that.$toast({
+						message: error.response.data.rsMsg,
+						position: 'top',
+					});
+					console.log(error.response.status);
+					console.log(error.response.headers);
+				}
+			});
 	},
 	methods: {
+		parentLisen(e) {
+			console.log('子组件传值' + e);
+			this.showChild = e;
+		},
 		timeTypeNum: function(a) {
 			// '一年期', '半年期', '三个月', '其他'
 			if (a == '一年期') {
@@ -229,6 +246,7 @@ export default {
 			return y + '-' + m + '-' + d;
 		},
 		open: function(picker) {
+			let that = this;
 			this.$refs.picker.open();
 		},
 		handleConfirm: function(value) {
@@ -236,14 +254,19 @@ export default {
 			this.time = this.formatDate(value);
 		},
 		showTime: function() {
-			// console.log(this.startDate);
 			this.showTimeModel = true;
 			this.timeVisible = !this.timeVisible;
-			// console.log(this.time);
+			if (!this.timeVisible) {
+				this.showTimeModel = false;
+			}
+			console.log(this.time);
 		},
 		showBank: function() {
 			this.showBankModel = true;
 			this.bankTypeVisible = !this.bankTypeVisible;
+			if (!this.bankTypeVisible) {
+				this.showBankModel = false;
+			}
 			console.log(this.bankType);
 		},
 		showSelect: function() {
@@ -252,13 +275,18 @@ export default {
 			console.log(this.ticketType);
 		},
 		submit: function() {
-	
 			let that = this;
-
 			let data = {};
 			console.log(this.istabActive);
-			this.isSubmit = false;
 
+			if (!this.isSubmit) {
+				Toast({
+					message: '请勿重复提交',
+					duration: 2000,
+				});
+				return;
+			}
+			that.isSubmit = false; //按钮禁用
 			if (this.istabActive == 1) {
 				// date={}
 				if (!this.money) {
@@ -288,13 +316,6 @@ export default {
 			}
 
 			if (this.istabActive == 2) {
-				if (this.stateNum % 5 > 1) {
-					Toast({
-						message: '您的需求提交次数已达上限，请登录汇票栈网站继续进行操作',
-						duration: 2000,
-					});
-					return;
-				}
 				if (!this.money) {
 					Toast({
 						message: '请输入您要贴现的票面金额',
@@ -327,7 +348,6 @@ export default {
 					message: '请输入手机号码',
 					duration: 2000,
 				});
-				this.phoneArr = true;
 				return;
 			}
 			if (!reg.test(this.phone)) {
@@ -335,65 +355,80 @@ export default {
 					message: '请输入正确的手机号码',
 					duration: 2000,
 				});
-				this.phoneArr = true;
 				return;
 			}
 			let t = {};
 			t.type = this.ticketTypeNum(this.ticketType);
 			data.draftAttr = t.type.draftAttr;
 			data.draftType = t.type.draftType;
-			// data.money = this.money;
-			console.log(parseInt(this.money))
-			data.money = parseInt(this.money);
-			
+			data.money = this.money;
 			data.acceptorBankName = this.bankType;
 			data.mobile = this.phone;
-			data.demand_type=1
-			let url='';
-			if(this.istabActive==1){
+			data.demand_type = 1;
+			that.msgdata.formDate = data;
+			let url = '';
+			if (this.istabActive == 1) {
 				//收票
-				url=global.globalUrl()+'/json/m/pub/v1/user/draft/receive/demand'
+				url = global.globalUrl() + '/json/m/pub/v1/user/draft/receive/demand';
 			}
-			if(this.istabActive==2){
+			if (this.istabActive == 2) {
 				//贴现
-				url=global.globalUrl()+'/json/m/pub/v1/user/draft/discount/demand'
+				url = global.globalUrl() + '/json/m/pub/v1/user/draft/discount/demand';
 			}
-			console.log(JSON.stringify(data));
 			console.log(data);
-			that.axios.post(url, data).then(res => {
+			that.axios
+				.post(url, data)
+				.then(res => {
 					console.log(res);
-					if(!res.data.rusult){
-						//未注册
-						that.msgdata=2
-					}else{
-						that.showsucepop=true
+					if (res.data.msg == '今日已提交过5条记录') {
+						Toast({
+							message: '今日已提交过5条记录',
+							duration: 2000,
+						});
+						that.tabActive(1);
+						return false;
 					}
-						// that.mobileStatus=1
-			// this.$router.push({ name: 'tel', query: { mobileStatus: that.mobileStatus } });
-			// console.log(this.$router.params);
-					// 		if(!this.isSubmit){
-					// 	Toast({
-					// 		message: '请勿重复提交',
-					// 		duration: 2000,
-					// 	});
-					// 	return
-					// }
+					if (res.data.result) {
+						//已注册
+						that.msgdata.showph = 2;
+						console.log(that.msgdata);
+						console.log(that.msgdata.showph + '已注册-showph');
+						that.msgdata.istabActive = that.istabActive;
+						that.showChild = true;
+
+						// return false
+					}
+
+					if (!res.data.result) {
+						//未注册
+						that.showChild = true;
+						that.msgdata.showph = 1;
+						that.msgdata.istabActive = that.istabActive;
+						that.msgdata.phoneNum = that.phone;
+						that.msgdata.formDate = data;
+						console.log(that.msgdata);
+						console.log(that.msgdata.showph + '未注册-showph');
+						console.log(that.msgdata);
+					}
+					that.tabActive(that.istabActive);
 				})
 				.catch(function(res) {
 					console.log(res);
+					this.isSubmit = true;
 				});
 
 			console.log(data);
 		},
 		tabActive: function(a) {
-			this.istabActive = a;
-			this.ticketType = '电子银行承兑汇票';
-			this.money = '';
-			this.time = '';
-			this.bankType = '';
-			this.phone = '';
+			let that = this;
+			that.istabActive = a;
+			that.ticketType = '电子银行承兑汇票';
+			that.money = '';
+			that.time = '';
+			that.bankType = '';
+			that.phone = '';
 
-			console.log(this.istabActive);
+			console.log(that.istabActive);
 		},
 		onValuesChange: function(picker, values) {
 			console.log(values);
@@ -403,11 +438,14 @@ export default {
 	},
 	data() {
 		return {
-			msgdata:null,
-			showsucepop:null,
-			mobileStatus:null,
+			showChild: false,
+			msgdata: {},
+			isSubmit: null,
+			mobileStatus: null,
 			transactionNum: null,
 			transactionMoney: null,
+			transactionMoneyYuan: null,
+			transactionMoneyWan: null,
 			isSubmit: true,
 			timedata: null,
 			startDate: new Date(new Date().setDate(new Date().getDate() + 1)),
@@ -452,6 +490,7 @@ export default {
 }
 </style>
 <style scoped>
+@import '../util/css/reset.css';
 ::-webkit-input-placeholder {
 	/* WebKit browsers */
 	color: #9999;
@@ -474,6 +513,9 @@ export default {
 	font-size: 32px;
 	font-weight: 800;
 	color: #60bcee;
+}
+.data-left .money-wy {
+	font-size: 20px;
 }
 .data-left :nth-child(2) {
 	font-size: 24px;
@@ -506,6 +548,7 @@ export default {
 	width: 55px;
 	height: 36px;
 	text-align: center;
+	font-size: 24px;
 }
 .time {
 	width: 37px;
@@ -561,7 +604,6 @@ ul {
 	width: 100%;
 	/* height: 50px; */
 }
-@import '../util/css/reset.css';
 .select-p {
 	font-family: Microsoft YaHei UI;
 	/* font-size: 18px; */
