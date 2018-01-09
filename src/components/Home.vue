@@ -17,10 +17,6 @@
 									<img class="ticket" src="../assets/img/ticket.png" alt="">
 									<input id="ticket" type="text" placeholder="请选择票据类型" :value="ticketType" readonly="readonly">
 									<div class="select-model" v-if="showSelectModel">
-										<mt-popup v-model="ticketTypeVisible" position="bottom" style="width:100%;">
-											<mt-radio style="width:100%;" title="票据类型" align="right" v-model="ticketType" :options="selectOptions"></mt-radio>
-
-										</mt-popup>
 									</div>
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
@@ -36,11 +32,7 @@
 								<div class="fx" @click="showTime()">
 									<img class="time" src="../assets/img/time.png" alt="">
 									<input readonly="readonly" id="time" type="text" placeholder="请选择期望汇票剩余天数" v-model="time">
-									<div class="select-model" v-if="showTimeModel">
-										<mt-popup v-model="timeVisible" position="bottom" style="width:100%;">
-											<mt-radio style="width:100%;" title="汇票剩余天数" align="right" v-model="time" :options="timeOptions"></mt-radio>
-										</mt-popup>
-									</div>
+
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
 							</label>
@@ -48,12 +40,7 @@
 								<div class="fx" @click="showBank()">
 									<img class="ticket" src="../assets/img/bank.png" alt="">
 									<input readonly="readonly" id="bank" type="text" placeholder="请选择期望承兑银行" v-model="bankType">
-									<div class="select-model" v-if="showBankModel">
-										<mt-popup v-model="bankTypeVisible" position="bottom" style="width:100%;">
-											<mt-radio style="width:100%;" title="承兑银行" align="right" v-model="bankType" :options="banktOptions"></mt-radio>
 
-										</mt-popup>
-									</div>
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
 							</label>
@@ -72,12 +59,7 @@
 								<div class="fx" @click="showSelect()">
 									<img class="ticket" src="../assets/img/ticket.png" alt="">
 									<input readonly="readonly" id="ticket" type="text" placeholder="请选择票据类型" :value="ticketType">
-									<div class="select-model" v-if="showSelectModel">
-										<mt-popup v-model="ticketTypeVisible" position="bottom" style="width:100%;">
-											<mt-radio style="width:100%;" title="票据类型" align="right" v-model="ticketType" :options="selectOptions"></mt-radio>
 
-										</mt-popup>
-									</div>
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
 							</label>
@@ -95,17 +77,12 @@
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
 							</label>
-							<mt-datetime-picker type="date" ref="picker" year-format="{value} 年" month-format="{value} 月" @confirm="handleConfirm" date-format="{value} 日" :startDate="startDate" :endDate="endDate">
-							</mt-datetime-picker>
+
 							<label for="bank" class="select-p">
 								<div class="fx" @click="showBank()">
 									<img class="ticket" src="../assets/img/bank.png" alt="">
 									<input readonly="readonly" id="bank" type="text" placeholder="请输入您的承兑银行" v-model="bankType">
-									<div class="select-model" v-if="showBankModel">
-										<mt-popup v-model="bankTypeVisible" position="bottom" style="width:100%;">
-											<mt-radio style="width:100%;" title="承兑银行" align="right" v-model="bankType" :options="banktOptions"></mt-radio>
-										</mt-popup>
-									</div>
+
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
 							</label>
@@ -121,6 +98,37 @@
 						</form>
 					</div>
 				</div>
+				<mt-popup v-model="ticketTypeVisible" position="bottom" style="width:100%;">
+					<mt-radio style="width:100%;" title="票据类型" align="right" v-model="ticketType" :options="selectOptions"></mt-radio>
+				</mt-popup>
+				<div class="select-model" v-if="showTimeModel">
+					<mt-popup v-model="timeVisible" position="bottom" style="width:100%;">
+						<mt-radio style="width:100%;" title="汇票剩余天数" align="right" v-model="time" :options="timeOptions"></mt-radio>
+					</mt-popup>
+				</div>
+
+				<div class="select-model" v-if="showBankModel">
+					<mt-popup v-model="bankTypeVisible" position="bottom" style="width:100%;">
+						<mt-radio style="width:100%;" title="承兑银行" align="right" v-model="bankType" :options="banktOptions"></mt-radio>
+
+					</mt-popup>
+				</div>
+
+				<div class="select-model" v-if="showSelectModel">
+					<mt-popup v-model="ticketTypeVisible" position="bottom" style="width:100%;">
+						<mt-radio style="width:100%;" title="票据类型" align="right" v-model="ticketType" :options="selectOptions"></mt-radio>
+
+					</mt-popup>
+				</div>
+				<div class="select-model" v-if="showBankModel">
+					<mt-popup v-model="bankTypeVisible" position="bottom" style="width:100%;">
+						<mt-radio style="width:100%;" title="承兑银行" align="right" v-model="bankType" :options="banktOptions"></mt-radio>
+					</mt-popup>
+				</div>
+
+				<mt-datetime-picker type="date" ref="picker" year-format="{value} 年" month-format="{value} 月" @confirm="handleConfirm" date-format="{value} 日" :startDate="startDate" :endDate="endDate">
+				</mt-datetime-picker>
+
 			</div>
 
 			<div class="home-process">
@@ -143,7 +151,7 @@
 						<img class="data-lr" src="../assets/img/data-right.png" alt="">
 						<div class="data-left">
 							<span>{{transactionMoney}}亿
-								<span class="money-wy">{{transactionMoneyWan}}万{{transactionMoneyYuan}}元</span>
+								<!-- <span class="money-wy">{{transactionMoneyWan}}万{{transactionMoneyYuan}}元</span> -->
 							</span>
 							<span>累计电票成交金额</span>
 						</div>
@@ -278,36 +286,42 @@ export default {
 			let that = this;
 			let data = {};
 			console.log(this.istabActive);
+			if (this.instance) {
+				this.instance.close();
+			}
 
 			if (!this.isSubmit) {
-				Toast({
+				this.instance = Toast({
 					message: '请勿重复提交',
 					duration: 2000,
+					className: 'toast',
 				});
 				return;
 			}
-			that.isSubmit = false; //按钮禁用
+
 			if (this.istabActive == 1) {
-				// date={}
 				if (!this.money) {
-					Toast({
+					this.instance = Toast({
 						message: '请输入您要买入的票据金额',
 						duration: 2000,
+						className: 'toast',
 					});
 					return;
 				}
 				if (!this.time) {
-					Toast({
+					this.instance = Toast({
 						message: '请选择汇票剩余天数',
 						duration: 2000,
+						className: 'toast',
 					});
 					return;
 				}
 
 				if (!this.bankType) {
-					Toast({
+					this.instance = Toast({
 						message: '请选择期望承兑银行',
 						duration: 2000,
+						className: 'toast',
 					});
 					return;
 				}
@@ -317,25 +331,28 @@ export default {
 
 			if (this.istabActive == 2) {
 				if (!this.money) {
-					Toast({
+					this.instance = Toast({
 						message: '请输入您要贴现的票面金额',
 						duration: 2000,
+						className: 'toast',
 					});
 					return;
 				}
 
 				if (!this.time) {
-					Toast({
+					this.instance = Toast({
 						message: '请选择您的到期日期',
 						duration: 2000,
+						className: 'toast',
 					});
 					return;
 				}
 
 				if (!this.bankType) {
-					Toast({
+					this.instance = Toast({
 						message: '请选择期望承兑银行',
 						duration: 2000,
+						className: 'toast',
 					});
 					return;
 				}
@@ -344,19 +361,22 @@ export default {
 
 			var reg = /^1[0-9]{10}$/;
 			if (!this.phone) {
-				Toast({
+				this.instance = Toast({
 					message: '请输入手机号码',
 					duration: 2000,
+					className: 'toast',
 				});
 				return;
 			}
 			if (!reg.test(this.phone)) {
-				Toast({
+				this.instance = Toast({
 					message: '请输入正确的手机号码',
 					duration: 2000,
+					className: 'toast',
 				});
 				return;
 			}
+			this.isSubmit = false; //按钮禁用
 			let t = {};
 			t.type = this.ticketTypeNum(this.ticketType);
 			data.draftAttr = t.type.draftAttr;
@@ -381,9 +401,10 @@ export default {
 				.then(res => {
 					console.log(res);
 					if (res.data.msg == '今日已提交过5条记录') {
-						Toast({
+						that.instance = Toast({
 							message: '今日已提交过5条记录',
 							duration: 2000,
+							className: 'toast',
 						});
 						that.tabActive(1);
 						return false;
@@ -427,6 +448,7 @@ export default {
 			that.time = '';
 			that.bankType = '';
 			that.phone = '';
+			that.isSubmit = true;
 
 			console.log(that.istabActive);
 		},
@@ -440,7 +462,6 @@ export default {
 		return {
 			showChild: false,
 			msgdata: {},
-			isSubmit: null,
 			mobileStatus: null,
 			transactionNum: null,
 			transactionMoney: null,
@@ -468,6 +489,7 @@ export default {
 			timeVisible: false,
 			ticketTypeVisible: false,
 			bankTypeVisible: false,
+			instance: null,
 		};
 	},
 	components: {
@@ -476,10 +498,29 @@ export default {
 };
 </script>
 <style>
+.mint-toast-text {
+	font-size: 30px !important;
+}
+.toast {
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	width: 80% !important;
+	height: 200px !important;
+	box-sizing: border-box;
+	font-weight: 600;
+}
+.mui-toast-message {
+	background: red !important;
+}
+
 .transactionMoney {
 	font-size: 18px !important;
 }
 .mint-cell-wrapper {
+	font-size: 30px !important;
+}
+.mint-radiolist-title {
 	font-size: 25px !important;
 }
 .picker-slot {
@@ -491,10 +532,16 @@ export default {
 </style>
 <style scoped>
 @import '../util/css/reset.css';
+
+.fx img {
+	width: 45px;
+	height: 36px;
+}
 ::-webkit-input-placeholder {
 	/* WebKit browsers */
 	color: #9999;
 	font-size: 24px;
+	font-weight: 500;
 }
 .data-center {
 	display: flex;
@@ -570,6 +617,7 @@ input {
 	box-sizing: border-box;
 	line-height: 50px;
 	font-size: 24px;
+	font-weight: 800;
 }
 .selected {
 	width: 33px;

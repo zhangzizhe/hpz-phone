@@ -12,7 +12,7 @@
 		</mt-popup>
 		<div class="sucepop" v-if="isShowTel==2">
 			<mt-popup v-model="suceVisible" position="top" modal class="ProPop">
-				<mt-popup v-model="suceVisible" pop-transition="popup-fade" modal class="cont">
+				<div class="cont">
 					<div v-if="IsShow==1">
 						<h1>您已注册成功，请注意查收短信</h1>
 						<p>我们已收到您的需求</p>
@@ -22,7 +22,7 @@
 						<h1>您的需求已提交</h1>
 						<p>客服人员会尽快与您联系</p>
 					</div>
-				</mt-popup>
+				</div>
 				<mt-button type="primary" size="large" class="ProPopBtn" @click="SuceClose()">再次发布需求</mt-button>
 			</mt-popup>
 		</div>
@@ -50,6 +50,7 @@ export default {
 			sucepop: false,
 			IsShow: 2,
 			suceVisible: true,
+			instance1: null,
 		};
 	},
 	mounted() {
@@ -71,15 +72,20 @@ export default {
 		},
 		countdown() {
 			let _this = this;
+			if (this.instance1) {
+				this.instance1.close();
+			}
+
 			console.log(this.phone);
 			if (this.isShowTel == 2) {
 				return false;
 			}
 			if (!/^1\d{10}$/.test(this.phone)) {
 				this.msg = 'error';
-				this.$toast({
+				this.instance1 = this.$toast({
 					message: '请输入正确的手机号码',
 					position: 'top',
+					className: 'toast',
 				});
 				return false;
 			}
@@ -105,17 +111,19 @@ export default {
 				.then(res => {
 					console.log(res);
 					if (res.data.success)
-						this.$toast({
+						_this.instance1 = _this.$toast({
 							message: '验证码发送成功',
 							position: 'top',
+							className: 'toast',
 						});
 				})
 				.catch(function(error) {
 					if (error.response) {
 						console.log(error.response.data);
-						that.$toast({
+						_this.instance1 = _this.$toast({
 							message: error.response.data.rsMsg,
 							position: 'top',
+							className: 'toast',
 						});
 						console.log(error.response.status);
 						console.log(error.response.headers);
@@ -136,16 +144,18 @@ export default {
 			console.log(verifyUrl);
 			if (!/^1\d{10}$/.test(this.phone)) {
 				this.msg = 'error';
-				this.$toast({
+				this.instance1 = this.$toast({
 					message: '请输入正确的手机号码',
 					position: 'top',
+					className: 'toast',
 				});
 				return false;
 			}
 			if (!this.sms_code) {
-				this.$toast({
+				this.instance1 = this.$toast({
 					message: '验证码错误',
 					position: 'top',
+					className: 'toast',
 				});
 				return false;
 			}
@@ -163,12 +173,13 @@ export default {
 					console.log(res.success);
 					console.log(res.rsMsg);
 				})
-				.catch(error=> {
+				.catch(error => {
 					if (error.response) {
 						console.log(error.response.data);
-						that.$toast({
+						that.instance1 = that.$toast({
 							message: error.response.data.rsMsg,
 							position: 'top',
+							className: 'toast',
 						});
 						console.log(error.response.status);
 						console.log(error.response.headers);
@@ -190,6 +201,15 @@ export default {
 </script>
 
 <style>
+.toast {
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	width: 80% !important;
+	height: 200px !important;
+	box-sizing: border-box;
+	font-weight: 600;
+}
 .mint-toast {
 	z-index: 2999 !important;
 	background: black !important;
@@ -240,6 +260,9 @@ export default {
 }
 .ProPop .cont {
 	width: 100%;
+	position: absolute;
+	left: 0;
+	top: 50%;
 }
 .ProPop .cont h1 {
 	font-size: 32px;
