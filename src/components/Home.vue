@@ -360,8 +360,8 @@ export default {
 				data.dueDate = this.time;
 			}
 
-			// var reg = /^1[0-9]{10}$/;
-			var reg = /^[1][3,4,5,7,8][0-9]{9}$/;
+			var reg = /^1[0-9]{10}$/;
+			// var reg = /^[1][3,4,5,7,8][0-9]{9}$/;
 			if (!this.phone) {
 				this.instance = Toast({
 					message: '请输入手机号码',

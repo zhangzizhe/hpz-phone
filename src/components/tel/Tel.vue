@@ -80,7 +80,7 @@ export default {
 			if (this.isShowTel == 2) {
 				return false;
 			}
-			if (!/^[1][3,4,5,7,8][0-9]{9}$/.test(this.phone)) {
+			if (!/^1[0-9]{10}$/.test(this.phone)) {
 				this.msg = 'error';
 				this.instance1 = this.$toast({
 					message: '请输入正确的手机号码',
@@ -142,7 +142,7 @@ export default {
 			let verifyUrl = this.istabActive(that.childMsg.istabActive);
 			// console.log(this.parentFormData.time + '子组件拿到formData');
 			console.log(verifyUrl);
-			if (!/^[1][3,4,5,7,8][0-9]{9}$/.test(this.phone)) {
+			if (!/^1[0-9]{10}$/.test(this.phone)) {
 				this.msg = 'error';
 				this.instance1 = this.$toast({
 					message: '请输入正确的手机号码',
