@@ -521,7 +521,7 @@ export default {
 	font-weight: 600;
 }
 .mui-toast-message {
-	background: red !important;
+	/* background: red !important; */
 }
 
 .transactionMoney {

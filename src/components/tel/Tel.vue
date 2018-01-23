@@ -137,8 +137,12 @@ export default {
 		},
 
 		verify() {
-			console.log(this.childMsg.istabActive);
 			let that = this;
+			if (this.instance1) {
+				this.instance1.close();
+			}
+			console.log(this.childMsg.istabActive);
+
 			let verifyUrl = this.istabActive(that.childMsg.istabActive);
 			// console.log(this.parentFormData.time + '子组件拿到formData');
 			console.log(verifyUrl);
@@ -212,7 +216,7 @@ export default {
 }
 .mint-toast {
 	z-index: 2999 !important;
-	background: black !important;
+	background: rgba(0, 0, 0, 0.5) !important;
 }
 .TelPopup {
 	width: 560px;
