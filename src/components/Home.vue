@@ -7,8 +7,9 @@
 			<div class="home-content-top">
 				<div class="home-ctb">
 					<ul class="tab">
-						<li @click="tabActive(1)" v-bind:class="istabActive===1?'tab-title tab-active':'tab-title'">{{title1}}</li>
 						<li @click="tabActive(2)" v-bind:class="istabActive===2?'tab-title tab-active':'tab-title'">{{title2}}</li>
+						<li @click="tabActive(1)" v-bind:class="istabActive===1?'tab-title tab-active':'tab-title'">{{title1}}</li>
+
 					</ul>
 					<div>
 						<form id="from" v-if="istabActive===1">
@@ -359,7 +360,8 @@ export default {
 				data.dueDate = this.time;
 			}
 
-			var reg = /^1[0-9]{10}$/;
+			// var reg = /^1[0-9]{10}$/;
+			var reg = /^[1][3,4,5,7,8][0-9]{9}$/;
 			if (!this.phone) {
 				this.instance = Toast({
 					message: '请输入手机号码',
@@ -433,9 +435,15 @@ export default {
 					}
 					that.tabActive(that.istabActive);
 				})
-				.catch(function(res) {
-					console.log(res);
-					this.isSubmit = true;
+				.catch(function(error) {
+					console.log(error.response);
+					that.isSubmit = true;
+					that.instance = Toast({
+						message: error.response.data.rsMsg,
+						duration: 2000,
+						className: 'toast',
+					});
+					return;
 				});
 
 			console.log(data);
@@ -462,7 +470,6 @@ export default {
 		return {
 			showChild: false,
 			msgdata: {},
-			mobileStatus: null,
 			transactionNum: null,
 			transactionMoney: null,
 			transactionMoneyYuan: null,
@@ -485,7 +492,7 @@ export default {
 			phone: '',
 			title1: '我要收票',
 			title2: '我要贴现',
-			istabActive: 1,
+			istabActive: 2,
 			timeVisible: false,
 			ticketTypeVisible: false,
 			bankTypeVisible: false,
@@ -498,6 +505,9 @@ export default {
 };
 </script>
 <style>
+.mint-toast {
+	background: rgba(0, 0, 0, 0.5) !important;
+}
 .mint-toast-text {
 	font-size: 30px !important;
 }
@@ -525,6 +535,7 @@ export default {
 }
 .picker-slot {
 	font-size: 25px !important;
+	font-weight: 700;
 }
 .mint-datetime-action {
 	font-size: 25px !important;
@@ -631,7 +642,7 @@ ul {
 	display: flex;
 	width: 100%;
 	height: 30px;
-	justify-content: flex-end;
+	justify-content: center;
 }
 .tab-title {
 	color: #999999;
