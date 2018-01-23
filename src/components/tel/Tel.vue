@@ -1,15 +1,17 @@
 <template>
 	<div>
-		<mt-popup v-model="popupVisible" pop-transition="popup-fade" closeOnClickModal class="TelPopup" v-if="isShowTel==1">
+		<mt-popup v-model="popupVisible" pop-transition="popup-fade" closeOnClickModal class="TelPopup" v-if="isShowTel===1">
 			<div class="telpop">
 				<h3 class="h3">验证您的联系手机</h3>
-				<mt-field readonly="readonly" label="手机号" placeholder="" type="tel" v-model="phone" :attr="{ maxlength: 11 }" :state=msg></mt-field>
-				<mt-field label="验证码" v-model="sms_code" :attr="{ maxlength: 6 }">
+				<mt-field label="手机号" placeholder="" type="tel" v-model="phone" :attr="{ maxlength: 11 }" :state="msg"></mt-field>
+				<mt-field label="验证码" type="tel" v-model="sms_code" :attr="{ maxlength: 6 }">
 					<mt-button class="validate" @click="countdown" :disabled="smsDis">{{smsBtnText}}</mt-button>
 				</mt-field>
 				<mt-button type="primary" size="large" class="btn" @click="verify()">立即验证</mt-button>
 			</div>
 		</mt-popup>
+		<div class="verification" @click="closeVerification" v-if="isShowTel===1"><img src="../../assets/img/close.png" alt=""></div>
+
 		<div class="sucepop" v-if="isShowTel==2">
 			<mt-popup v-model="suceVisible" position="top" modal class="ProPop">
 				<div class="cont">
@@ -37,6 +39,7 @@ export default {
 	data() {
 		return {
 			isShowTel: this.childMsg.showph,
+			// isShowTel:1,
 			phone: this.childMsg.phoneNum,
 			parentFormData: this.childMsg.formDate,
 			sms_code: '',
@@ -58,6 +61,9 @@ export default {
 	},
 	beforeUpdate() {},
 	methods: {
+		closeVerification() {
+			this.$emit('newNodeEvent', false);
+		},
 		istabActive(a) {
 			// 1收票2贴现
 			console.log(a);
@@ -157,7 +163,15 @@ export default {
 			}
 			if (!this.sms_code) {
 				this.instance1 = this.$toast({
-					message: '验证码错误',
+					message: '请输入短信验证码',
+					position: 'top',
+					className: 'toast',
+				});
+				return false;
+			}
+			if (this.sms_code.length < 6) {
+				this.instance1 = this.$toast({
+					message: '请输入正确的验证码',
 					position: 'top',
 					className: 'toast',
 				});
@@ -181,7 +195,8 @@ export default {
 					if (error.response) {
 						console.log(error.response.data);
 						that.instance1 = that.$toast({
-							message: error.response.data.rsMsg,
+							// message: error.response.data.rsMsg,
+							message: '短信验证失败，请重新输入',
 							position: 'top',
 							className: 'toast',
 						});
@@ -205,6 +220,25 @@ export default {
 </script>
 
 <style>
+.verification {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 80%;
+	left: 50%;
+	-webkit-transform: translate3d(-50%, -50%, 0);
+	transform: translate3d(-50%, -50%, 0);
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transition: 0.2s ease-out;
+	transition: 0.2s ease-out;
+	z-index: 10000;
+}
+.verification img {
+	width: 100px;
+	height: 100px;
+}
 .toast {
 	display: flex !important;
 	justify-content: center !important;

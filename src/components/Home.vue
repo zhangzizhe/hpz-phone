@@ -8,7 +8,7 @@
 				<div class="home-ctb">
 					<ul class="tab">
 						<li @click="tabActive(2)" v-bind:class="istabActive===2?'tab-title tab-active':'tab-title'">{{title2}}</li>
-						<li @click="tabActive(1)" v-bind:class="istabActive===1?'tab-title tab-active':'tab-title'">{{title1}}</li>
+						<li @click="tabActive(1)" v-bind:class="istabActive===1?'tab-title tab-active tab-title-right':'tab-title tab-title-right'">{{title1}}</li>
 
 					</ul>
 					<div>
@@ -82,7 +82,7 @@
 							<label for="bank" class="select-p">
 								<div class="fx" @click="showBank()">
 									<img class="ticket" src="../assets/img/bank.png" alt="">
-									<input readonly="readonly" id="bank" type="text" placeholder="请输入您的承兑银行" v-model="bankType">
+									<input readonly="readonly" id="bank" type="text" placeholder="请选择您的承兑银行" :value="bankType">
 
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
@@ -99,34 +99,36 @@
 						</form>
 					</div>
 				</div>
-				<mt-popup v-model="ticketTypeVisible" position="bottom" style="width:100%;">
-					<mt-radio style="width:100%;" title="票据类型" align="right" v-model="ticketType" :options="selectOptions"></mt-radio>
-				</mt-popup>
-				<div class="select-model" v-if="showTimeModel">
-					<mt-popup v-model="timeVisible" position="bottom" style="width:100%;">
-						<mt-radio style="width:100%;" title="汇票剩余天数" align="right" v-model="time" :options="timeOptions"></mt-radio>
-					</mt-popup>
-				</div>
-
-				<div class="select-model" v-if="showBankModel">
-					<mt-popup v-model="bankTypeVisible" position="bottom" style="width:100%;">
-						<mt-radio style="width:100%;" title="承兑银行" align="right" v-model="bankType" :options="banktOptions"></mt-radio>
-
-					</mt-popup>
-				</div>
-
 				<div class="select-model" v-if="showSelectModel">
 					<mt-popup v-model="ticketTypeVisible" position="bottom" style="width:100%;">
-						<mt-radio style="width:100%;" title="票据类型" align="right" v-model="ticketType" :options="selectOptions"></mt-radio>
-
+						<div class="popup-control">
+							<span @click="cancel('ticket')">取消</span>
+							<span @click="determine('ticket')">确定</span>
+						</div>
+						<mt-radio style="width:100%;"  align="right" v-model="ticketTypeRadio" :options="selectOptions"></mt-radio>
 					</mt-popup>
 				</div>
+
+				<div class="select-model" v-if="showTimeModel">
+					<mt-popup v-model="timeVisible" position="bottom" style="width:100%;">
+						<div class="popup-control">
+							<span @click="cancel('time')">取消</span>
+							<span @click="determine('time')">确定</span>
+						</div>
+						<mt-radio style="width:100%;" align="right" v-model="timeRadio" :options="timeOptions"></mt-radio>
+					</mt-popup>
+				</div>
+
 				<div class="select-model" v-if="showBankModel">
 					<mt-popup v-model="bankTypeVisible" position="bottom" style="width:100%;">
-						<mt-radio style="width:100%;" title="承兑银行" align="right" v-model="bankType" :options="banktOptions"></mt-radio>
+						<div class="popup-control">
+							<span @click="cancel('bank')">取消</span>
+							<span @click="determine('bank')">确定</span>
+						</div>
+						<mt-radio style="width:100%;" align="right" v-model="bankTypeRadio" :options="banktOptions"></mt-radio>
+
 					</mt-popup>
 				</div>
-
 				<mt-datetime-picker type="date" ref="picker" year-format="{value} 年" month-format="{value} 月" @confirm="handleConfirm" date-format="{value} 日" :startDate="startDate" :endDate="endDate">
 				</mt-datetime-picker>
 
@@ -207,6 +209,63 @@ export default {
 			});
 	},
 	methods: {
+		determine(type) {
+			if (this.instance) {
+				this.instance.close();
+			}
+			console.log(type);
+
+			if (type === 'ticket') {
+				this.ticketType = this.ticketTypeRadio;
+				// if (!this.bankType1) {
+				// 	this.instance = Toast({
+				// 		message: '请选择票据类型',
+				// 		duration: 1000,
+				// 		className: 'toast',
+				// 	});
+				// 	return;
+				// }
+				this.ticketTypeVisible = false;
+				return;
+			}
+			if (type === 'time') {
+				this.time = this.timeRadio;
+				if (!this.time) {
+					this.instance = Toast({
+						message: '请选择汇票剩余天数',
+						duration: 1000,
+						className: 'toast',
+					});
+					return;
+				}
+				this.timeVisible = false;
+				return;
+			}
+			if (type === 'bank') {
+				this.bankType = this.bankTypeRadio;
+				if (!this.bankType) {
+					this.instance = Toast({
+						message: '请选择承兑银行',
+						duration: 1000,
+						className: 'toast',
+					});
+					return;
+				}
+				this.bankTypeVisible = false;
+				return;
+			}
+		},
+		cancel(type) {
+			if (type === 'ticket') {
+				this.ticketTypeVisible = false;
+			}
+			if (type === 'time') {
+				this.timeVisible=false
+			}
+			if (type === 'bank') {
+				this.bankTypeVisible = false;
+			}
+		},
 		parentLisen(e) {
 			console.log('子组件传值' + e);
 			this.showChild = e;
@@ -351,7 +410,7 @@ export default {
 
 				if (!this.bankType) {
 					this.instance = Toast({
-						message: '请选择期望承兑银行',
+						message: '请选择承兑银行',
 						duration: 2000,
 						className: 'toast',
 					});
@@ -468,6 +527,9 @@ export default {
 	},
 	data() {
 		return {
+			timeRadio: null,
+			ticketTypeRadio: '电子银行承兑汇票',
+			bankTypeRadio: null,
 			showChild: false,
 			msgdata: {},
 			transactionNum: null,
@@ -505,6 +567,12 @@ export default {
 };
 </script>
 <style>
+.mint-datetime .picker-toolbar {
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	height: 50px !important;
+}
 .mint-toast {
 	background: rgba(0, 0, 0, 0.5) !important;
 }
@@ -520,10 +588,6 @@ export default {
 	box-sizing: border-box;
 	font-weight: 600;
 }
-.mui-toast-message {
-	/* background: red !important; */
-}
-
 .transactionMoney {
 	font-size: 18px !important;
 }
@@ -538,12 +602,28 @@ export default {
 	font-weight: 700;
 }
 .mint-datetime-action {
-	font-size: 25px !important;
+	font-size: 35px !important;
 }
 </style>
 <style scoped>
 @import '../util/css/reset.css';
-
+.popup-control {
+	width: 100%;
+	height: 50px;
+	display: flex;
+	justify-content: space-around;
+	border-bottom: solid 2px #eaeaea;
+	align-items: center;
+	/* background: red; */
+	color: #26a2ff;
+}
+.popup-control span {
+	display: block;
+	font-size: 30px;
+}
+.tab-title-right {
+	margin-left: 40px;
+}
 .fx img {
 	width: 45px;
 	height: 36px;
@@ -623,12 +703,14 @@ input {
 	width: 100%;
 	height: 50px;
 	border: none;
-	padding-left: 36px;
+	/* padding-left: 36px; */
 	margin: 0;
 	box-sizing: border-box;
 	line-height: 50px;
 	font-size: 24px;
 	font-weight: 800;
+	margin: 0 30px 0 30px !important;
+	/* outline: none; */
 }
 .selected {
 	width: 33px;
@@ -648,7 +730,7 @@ ul {
 	color: #999999;
 	font-size: 24px;
 	height: 30px;
-	margin-left: 86px;
+	/* margin-left: 86px; */
 	font-weight: 800;
 	line-height: 30px;
 }
