@@ -16,7 +16,7 @@
 							<label for="ticket" class="select-p">
 								<div class="fx" @click="showSelect()">
 									<img class="ticket" src="../assets/img/ticket.png" alt="">
-									<input id="ticket" type="text" placeholder="请选择票据类型" :value="ticketType" readonly="readonly">
+									<input unselectable="on" onfocus="this.blur()" id="ticket" type="text" placeholder="请选择票据类型" :value="ticketType" readonly="readonly">
 									<div class="select-model" v-if="showSelectModel">
 									</div>
 								</div>
@@ -34,7 +34,7 @@
 							<label for="time" class="select-p">
 								<div class="fx" @click="showTime()">
 									<img class="time" src="../assets/img/time.png" alt="">
-									<input readonly="readonly" id="time" type="text" placeholder="请选择期望汇票剩余天数" v-model="time">
+									<input unselectable="on" onfocus="this.blur()" readonly="readonly" id="time" type="text" placeholder="请选择期望汇票剩余天数" v-model="time">
 
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
@@ -42,7 +42,7 @@
 							<label for="bank" class="select-p">
 								<div class="fx" @click="showBank()">
 									<img class="ticket" src="../assets/img/bank.png" alt="">
-									<input readonly="readonly" id="bank" type="text" placeholder="请选择期望承兑银行" v-model="bankType">
+									<input unselectable="on" onfocus="this.blur()" readonly="readonly" id="bank" type="text" placeholder="请选择期望承兑银行" v-model="bankType">
 
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
@@ -63,7 +63,7 @@
 							<label for="ticket" class="select-p">
 								<div class="fx" @click="showSelect()">
 									<img class="ticket" src="../assets/img/ticket.png" alt="">
-									<input readonly="readonly" id="ticket" type="text" placeholder="请选择票据类型" :value="ticketType">
+									<input unselectable="on" onfocus="this.blur()" readonly="readonly" id="ticket" type="text" placeholder="请选择票据类型" :value="ticketType">
 
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
@@ -78,7 +78,7 @@
 							<label for="time" class="select-p">
 								<div class="fx" @click="open">
 									<img class="time" src="../assets/img/time.png" alt="">
-									<input readonly="readonly" id="time" type="text" placeholder="请选择您的到期日期" :value="time">
+									<input unselectable="on" onfocus="this.blur()" readonly="readonly" id="time" type="text" placeholder="请选择您的到期日期" :value="time">
 								</div>
 								<img class="selected" src="../assets/img/selected.png" alt="">
 							</label>
