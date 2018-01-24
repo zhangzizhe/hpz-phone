@@ -766,7 +766,7 @@ input {
 	/* padding-left: 36px; */
 	margin: 0;
 	box-sizing: border-box;
-	line-height: 50px;
+	/* line-height: 50px; */
 	font-size: 24px;
 	font-weight: 800;
 	margin: 0 30px 0 30px !important;
