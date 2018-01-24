@@ -25,7 +25,9 @@
 							<label for="money" class="select-p">
 								<div class="fx">
 									<img class="ticket" src="../assets/img/money.png" alt="">
-									<input id="money" type="number" placeholder="请输入您要买入的票据金额" v-model="money" oninput="if(value.length>5)value=value.slice(0,5)">
+									<input id="money" pattern="[0-9]*" type="tel" placeholder="请输入您要买入的票据金额" v-model="money" @keyup="phoneType(3)">
+
+									<!-- <input id="money" type="number" placeholder="请输入您要买入的票据金额" v-model="money" oninput="if(value.length>5)value=value.slice(0,5)"> -->
 								</div>
 								<span class="money-d">万元</span>
 							</label>
@@ -48,7 +50,9 @@
 							<label for="phone" class="select-p">
 								<div class="fx">
 									<img class="ticket" src="../assets/img/phone.png" alt="">
-									<input id="phone" type="number" placeholder="请输入手机号码" v-model="phone" oninput="if(value.length>11)value=value.slice(0,11)">
+									<!-- <input id="phone" type="number" placeholder="请输入手机号码" v-model="phone" oninput="if(value.length>11)value=value.slice(0,11)"> -->
+									<input id="phone" type="tel" pattern="[0-9]*" placeholder="请输入手机号码" v-model="phone" @keyup="phoneType">
+
 								</div>
 							</label>
 
@@ -67,7 +71,7 @@
 							<label for="money" class="select-p">
 								<div class="fx">
 									<img class="ticket" src="../assets/img/money.png" alt="">
-									<input id="money" type="number" placeholder="请输入您要贴现的票面金额" v-model="money" oninput="if(value.length>5)value=value.slice(0,5)">
+									<input id="money" pattern="[0-9]*" type="tel" placeholder="请输入您要贴现的票面金额" v-model="money" @keyup="phoneType(3)">
 								</div>
 								<span class="money-d">万元</span>
 							</label>
@@ -91,7 +95,7 @@
 								<div class="fx">
 									<img class="ticket" src="../assets/img/phone.png" alt="">
 									<!-- <input id="phone" type="tel" placeholder="请输入手机号码" v-model="phone" oninput="if(value.length>11)value=value.slice(0,11)"> -->
-									<input id="phone" type="tel" pattern="[0-9]*" placeholder="请输入手机号码" v-model="phone" @keyup="phoneType" >
+									<input id="phone" type="tel" pattern="[0-9]*" placeholder="请输入手机号码" v-model="phone" @keyup="phoneType">
 
 								</div>
 							</label>
@@ -211,12 +215,21 @@ export default {
 			});
 	},
 	methods: {
-		phoneType(){
-			let v=this.phone
-			if(v){
-				this.phone=v.replace(/\D/g,'')
-				if(v.length>11){
-					 this.phone=v.slice(0,11)
+		phoneType(a) {
+			let v = this.phone;
+			if (v) {
+				this.phone = v.replace(/\D/g, '');
+				if (v.length > 11) {
+					this.phone = v.slice(0, 11);
+				}
+			}
+			if (a && a === 3) {
+				let v = this.money;
+				if (v) {
+					this.money = v.replace(/\D/g, '');
+					if (v.length > 5) {
+						this.money = v.slice(0, 5);
+					}
 				}
 			}
 		},
@@ -379,6 +392,14 @@ export default {
 					});
 					return;
 				}
+				if (!/^[0-9]*$/.test(this.money) || this.money.length > 5) {
+					this.instance = Toast({
+						message: '请输入正确的票据金额',
+						duration: 2000,
+						className: 'toast',
+					});
+					return;
+				}
 				if (!this.time) {
 					this.instance = Toast({
 						message: '请选择汇票剩余天数',
@@ -404,6 +425,15 @@ export default {
 				if (!this.money) {
 					this.instance = Toast({
 						message: '请输入您要贴现的票面金额',
+						duration: 2000,
+						className: 'toast',
+					});
+					return;
+				}
+
+				if (!/^[0-9]*$/.test(this.money) || this.money.length > 5) {
+					this.instance = Toast({
+						message: '请输入正确的票面金额',
 						duration: 2000,
 						className: 'toast',
 					});
