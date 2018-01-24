@@ -90,7 +90,9 @@
 							<label for="phone" class="select-p">
 								<div class="fx">
 									<img class="ticket" src="../assets/img/phone.png" alt="">
-									<input id="phone" type="number" placeholder="请输入手机号码" v-model="phone" oninput="if(value.length>11)value=value.slice(0,11)">
+									<!-- <input id="phone" type="tel" placeholder="请输入手机号码" v-model="phone" oninput="if(value.length>11)value=value.slice(0,11)"> -->
+									<input id="phone" type="tel" pattern="[0-9]*" placeholder="请输入手机号码" v-model="phone" @keyup="phoneType" >
+
 								</div>
 							</label>
 
@@ -105,7 +107,7 @@
 							<span @click="cancel('ticket')">取消</span>
 							<span @click="determine('ticket')">确定</span>
 						</div>
-						<mt-radio style="width:100%;"  align="right" v-model="ticketTypeRadio" :options="selectOptions"></mt-radio>
+						<mt-radio style="width:100%;" align="right" v-model="ticketTypeRadio" :options="selectOptions"></mt-radio>
 					</mt-popup>
 				</div>
 
@@ -209,6 +211,15 @@ export default {
 			});
 	},
 	methods: {
+		phoneType(){
+			let v=this.phone
+			if(v){
+				this.phone=v.replace(/\D/g,'')
+				if(v.length>11){
+					 this.phone=v.slice(0,11)
+				}
+			}
+		},
 		determine(type) {
 			if (this.instance) {
 				this.instance.close();
@@ -260,7 +271,7 @@ export default {
 				this.ticketTypeVisible = false;
 			}
 			if (type === 'time') {
-				this.timeVisible=false
+				this.timeVisible = false;
 			}
 			if (type === 'bank') {
 				this.bankTypeVisible = false;
@@ -571,7 +582,7 @@ export default {
 	display: flex !important;
 	justify-content: center !important;
 	align-items: center !important;
-	height: 50px !important;
+	height: 70px !important;
 }
 .mint-toast {
 	background: rgba(0, 0, 0, 0.5) !important;
@@ -609,7 +620,7 @@ export default {
 @import '../util/css/reset.css';
 .popup-control {
 	width: 100%;
-	height: 50px;
+	height: 55px;
 	display: flex;
 	justify-content: space-around;
 	border-bottom: solid 2px #eaeaea;

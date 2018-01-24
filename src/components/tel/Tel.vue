@@ -1,16 +1,17 @@
 <template>
 	<div>
 		<mt-popup v-model="popupVisible" pop-transition="popup-fade" closeOnClickModal class="TelPopup" v-if="isShowTel===1">
+			<div class="verification" @click="closeVerification" v-if="isShowTel===1"><img src="../../assets/img/close.png" alt=""></div>
 			<div class="telpop">
 				<h3 class="h3">验证您的联系手机</h3>
-				<mt-field label="手机号" placeholder="" type="tel" v-model="phone" :attr="{ maxlength: 11 }" :state="msg"></mt-field>
+				<mt-field label="手机号" readonly="readonly" placeholder="" type="number" v-model="phone" :attr="{ maxlength: 11 }" :state="msg"></mt-field>
 				<mt-field label="验证码" type="tel" v-model="sms_code" :attr="{ maxlength: 6 }">
 					<mt-button class="validate" @click="countdown" :disabled="smsDis">{{smsBtnText}}</mt-button>
 				</mt-field>
 				<mt-button type="primary" size="large" class="btn" @click="verify()">立即验证</mt-button>
 			</div>
 		</mt-popup>
-		<div class="verification" @click="closeVerification" v-if="isShowTel===1"><img src="../../assets/img/close.png" alt=""></div>
+		<!-- <div class="verification" @click="closeVerification" v-if="isShowTel===1"><img src="../../assets/img/close.png" alt=""></div> -->
 
 		<div class="sucepop" v-if="isShowTel==2">
 			<mt-popup v-model="suceVisible" position="top" modal class="ProPop">
@@ -61,6 +62,28 @@ export default {
 	},
 	beforeUpdate() {},
 	methods: {
+		phoneType(a){
+
+			if(a===1){
+					let v=this.phone
+			if(v){
+				this.phone=v.replace(/\D/g,'')
+				if(v.length>11){
+					 this.phone=v.slice(0,11)
+				}
+			}
+			}
+			if(a===2){
+				let v=this.sms_code
+				if(v){
+				this.sms_code=v.replace(/\D/g,'')
+				if(v.length>6){
+					 this.sms_code=v.slice(0,6)
+				}
+			}
+			}
+		
+		},
 		closeVerification() {
 			this.$emit('newNodeEvent', false);
 		},
@@ -82,7 +105,7 @@ export default {
 				this.instance1.close();
 			}
 
-			console.log(this.phone);
+			console.log(this.phone+'dianhua');
 			if (this.isShowTel == 2) {
 				return false;
 			}
@@ -169,7 +192,7 @@ export default {
 				});
 				return false;
 			}
-			if (this.sms_code.length < 6) {
+			if (!/^\d{6}$/.test(this.sms_code)) {
 				this.instance1 = this.$toast({
 					message: '请输入正确的验证码',
 					position: 'top',
@@ -179,7 +202,9 @@ export default {
 			}
 
 			that.parentFormData.sms_code = that.sms_code;
+			// that.parentFormData.mobile=this.phone
 			console.log(that.parentFormData);
+			console.log(that.parentFormData.mobile+'提交的电话')
 			that.axios
 				.post(verifyUrl, that.parentFormData)
 				.then(res => {
@@ -196,7 +221,7 @@ export default {
 						console.log(error.response.data);
 						that.instance1 = that.$toast({
 							// message: error.response.data.rsMsg,
-							message: '短信验证失败，请重新输入',
+							message: '请输入正确的验证码',
 							position: 'top',
 							className: 'toast',
 						});
@@ -224,23 +249,17 @@ export default {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	position: fixed;
-	top: 80%;
-	left: 50%;
-	-webkit-transform: translate3d(-50%, -50%, 0);
-	transform: translate3d(-50%, -50%, 0);
-	-webkit-backface-visibility: hidden;
-	backface-visibility: hidden;
-	-webkit-transition: 0.2s ease-out;
-	transition: 0.2s ease-out;
+	position: absolute;
+	top: 15px;
+	right:15px;
 	z-index: 10000;
 }
 .verification img {
-	width: 100px;
-	height: 100px;
+	width: 30px;
+	height: 30px;
 }
 .toast {
-	display: flex !important;
+	display: absolute !important;
 	justify-content: center !important;
 	align-items: center !important;
 	width: 80% !important;
