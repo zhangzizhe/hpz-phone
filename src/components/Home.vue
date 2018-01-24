@@ -84,12 +84,12 @@
 							</label>
 
 							<label for="bank" class="select-p">
-								<div class="fx" @click="showBank()">
+								<div class="fx">
 									<img class="ticket" src="../assets/img/bank.png" alt="">
-									<input readonly="readonly" id="bank" type="text" placeholder="请选择您的承兑银行" :value="bankType">
-
+									<!-- <input readonly="readonly" id="bank" type="text" placeholder="请选择您的承兑银行" :value="bankType"> -->
+									<input id="bank" type="text" placeholder="请输入您的承兑银行" v-model="bankType" maxlength="30" @keyup="phoneType('bank')">
 								</div>
-								<img class="selected" src="../assets/img/selected.png" alt="">
+								<!-- <img class="selected" src="../assets/img/selected.png" alt=""> -->
 							</label>
 							<label for="phone" class="select-p">
 								<div class="fx">
@@ -229,6 +229,15 @@ export default {
 					this.money = v.replace(/\D/g, '');
 					if (v.length > 5) {
 						this.money = v.slice(0, 5);
+					}
+				}
+			}
+			if (a && a == 'bank') {
+				let v = this.bankType;
+				if (v) {
+					this.bankType = v.replace(/\s+/g, '');
+					if (v.length > 30) {
+						this.bankType = v.slice(0, 60);
 					}
 				}
 			}
@@ -384,6 +393,7 @@ export default {
 			}
 
 			if (this.istabActive == 1) {
+				//收票
 				if (!this.money) {
 					this.instance = Toast({
 						message: '请输入您要买入的票据金额',
@@ -422,6 +432,7 @@ export default {
 			}
 
 			if (this.istabActive == 2) {
+				//贴现
 				if (!this.money) {
 					this.instance = Toast({
 						message: '请输入您要贴现的票面金额',
@@ -451,7 +462,15 @@ export default {
 
 				if (!this.bankType) {
 					this.instance = Toast({
-						message: '请选择承兑银行',
+						message: '请输入承兑银行',
+						duration: 2000,
+						className: 'toast',
+					});
+					return;
+				}
+				if (this.bankType.length > 30) {
+					this.instance = Toast({
+						message: '请输入正确的承兑银行限30个字符内',
 						duration: 2000,
 						className: 'toast',
 					});
