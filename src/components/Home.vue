@@ -527,7 +527,7 @@ export default {
 							duration: 2000,
 							className: 'toast',
 						});
-						that.tabActive(1);
+						that.tabActive(that.istabActive);
 						return false;
 					}
 					if (res.data.result) {
